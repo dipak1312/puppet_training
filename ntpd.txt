@@ -1,0 +1,51 @@
+Configure NTP
+RHEL6
+package=> ntp
+file => /etc/sysconfig/ntpd':
+        content => 'OPTIONS="-u ntpd"',
+          }
+service => ntpd
+RHEL7
+package=>ntp
+file => /etc/sysconfig/chronyd':
+        content => 'OPTIONS="-u chrony"',
+        
+service => ntp
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+case $facts ['os'] ['family'] 
+  'RedHat': 
+    case $facts ['os'] ['release'] ['major'] {
+     6:
+     package {'ntp':
+       name   => 'ntp',
+       ensure => installed,
+       }
+     file {'/etc/sysconfig/ntpd':
+       ensure  => present
+       content => 'OPTIONS="-u ntpd"',
+     }
+     service {'ntpd'
+      ensure => running,
+      enable => true,
+     }
+    }
+
+  7:
+     package {'chrony':
+       name   => 'chrony',
+       ensure => installed,   
+     }
+     file {'/etc/sysconfig/chronyd':,
+       ensure  => present,
+       content => 'OPTIONS="-u chrony"',
+       }
+     service {'chronyd:'
+      ensure => running,
+      enable => true, 
+      }
+     }
+      
+
+ 
